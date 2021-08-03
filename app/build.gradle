@@ -27,9 +27,8 @@ android {
 
         def connectionProperties = "$projectDir/../../../services/codebreaker.properties"
 
-        buildConfigField "String", "CLIENT_ID", quoted(getProperty(connectionProperties, 'client_id'))
-
-
+        buildConfigField 'String', 'CLIENT_ID',
+                quoted(getProperty(connectionProperties, 'client_id'))
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -106,7 +105,7 @@ dependencies {
     // OkHttp library
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
 
-    // Google Sign'In library
+    // Google Sign-In library
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
 
     // Stetho (inspection) library
