@@ -11,7 +11,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import edu.cnm.deepdive.codebreaker.BuildConfig;
+import edu.cnm.deepdive.codebreaker.model.entity.User;
 import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 
 public class GoogleSignInService {
 
@@ -20,6 +22,7 @@ public class GoogleSignInService {
   private static Application context;
 
   private final GoogleSignInClient client;
+  private final UserRepository userRepository;
 
   private GoogleSignInAccount account;
 
@@ -31,6 +34,7 @@ public class GoogleSignInService {
         .requestIdToken(BuildConfig.CLIENT_ID)
         .build();
     client = GoogleSignIn.getClient(context, options);
+    userRepository = new UserRepository(context);
   }
 
   public static void setContext(Application context) {
@@ -63,6 +67,13 @@ public class GoogleSignInService {
   public Single<String> refreshBearerToken() {
     return refresh()
         .map((account) -> String.format(BEARER_TOKEN_FORMAT, account.getIdToken()));
+  }
+
+  public Single<User> refreshUser() {
+    return refresh()
+        .observeOn(Schedulers.io())
+        .flatMap((account) -> userRepository.getOrCreate(account.getId(), account.getDisplayName()));
+
   }
 
   public void startSignIn(Activity activity, int requestCode) {
