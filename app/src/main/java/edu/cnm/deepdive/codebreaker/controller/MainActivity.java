@@ -6,31 +6,37 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import edu.cnm.deepdive.codebreaker.MobileNavigationDirections;
 import edu.cnm.deepdive.codebreaker.R;
+import edu.cnm.deepdive.codebreaker.databinding.ActivityMainBinding;
 import edu.cnm.deepdive.codebreaker.service.GoogleSignInService;
 import edu.cnm.deepdive.codebreaker.viewmodel.GameViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
+  private ActivityMainBinding binding;
+  private NavController navController;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+    binding = ActivityMainBinding.inflate(getLayoutInflater());
+    setContentView(binding.getRoot());
     BottomNavigationView navView = findViewById(R.id.nav_view);
     // Passing each menu ID as a set of Ids because each
     // menu should be considered as top level destinations.
     AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
         R.id.navigation_play, R.id.navigation_scoreboard, R.id.navigation_history)
         .build();
-    NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+    navController = Navigation.findNavController(this, R.id.nav_host_fragment);
     NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
     NavigationUI.setupWithNavController(navView, navController);
     GameViewModel viewModel = new ViewModelProvider(this).get(GameViewModel.class);
@@ -57,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     boolean handled = true;
     switch (item.getItemId()) {
       // TODO specify case ids from options menu
+      case R.id.profile_option:
+        navController.navigate(MobileNavigationDirections.showProfle());
+        break;
       case R.id.settings_option:
         openSettings();
         break;
@@ -74,10 +83,9 @@ public class MainActivity extends AppCompatActivity {
         .getInstance()
         .signOut()
         .addOnCompleteListener((ignored) -> {
-          Intent intent = new Intent(this, LoginActivity.class);
-          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+          Intent intent = new Intent(this, LoginActivity.class)
+              .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
           startActivity(intent);
-
         });
   }
 

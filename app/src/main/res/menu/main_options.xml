@@ -4,6 +4,11 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <item
+    android:id="@+id/profile_option"
+    android:title="@string/profile_label"
+    app:showAsAction="never"/>
+
+  <item
     android:id="@+id/settings_option"
     android:title="@string/settings_label"
     app:showAsAction="never"/>
